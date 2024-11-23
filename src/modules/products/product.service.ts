@@ -7,6 +7,13 @@ const createProductIntoDB = async (productData: TBicycle) => {
   return res;
 };
 
+const getProductFromDB = async () => {
+  const res = await Product.find();
+
+  return res;
+};
+
 export const productServices = {
   createProductIntoDB,
+  getProductFromDB,
 };
