@@ -5,7 +5,7 @@ import { isValidObjectId } from 'mongoose';
 
 // POST /api/products
 // Create a product
-const createProduct = async (req: Request, res: Response) => {
+const createProduct = async (req: Request, res: Response): Promise<any> => {
   try {
     const product = req.body;
 
@@ -22,7 +22,7 @@ const createProduct = async (req: Request, res: Response) => {
     // create product
     const result = await productServices.createProductIntoDB(parsedProduct);
 
-    if(!result){
+    if (!result) {
       return res.status(400).json({
         success: false,
         message: 'Failed to create Bicycle',
@@ -46,11 +46,11 @@ const createProduct = async (req: Request, res: Response) => {
 
 // GET /api/products
 // get all products
-const getAllProducts = async (req: Request, res: Response) => {
+const getAllProducts = async (req: Request, res: Response): Promise<any> => {
   try {
     const result = await productServices.getProductFromDB();
 
-    if(!result){
+    if (!result) {
       return res.status(404).json({
         success: false,
         message: 'No bicycles found',
@@ -74,7 +74,8 @@ const getAllProducts = async (req: Request, res: Response) => {
 
 // GET /api/products/:productId
 // get single product
-const getSingleProduct = async (req: Request, res: Response) => {
+
+const getSingleProduct = async (req: Request, res: Response): Promise<any> => {
   try {
     const productId = req.params.productId;
 
@@ -110,8 +111,57 @@ const getSingleProduct = async (req: Request, res: Response) => {
   }
 };
 
+// PUT /api/products/:productId
+// update a product
+const updateAProduct = async (req: Request, res: Response): Promise<any> => {
+  try {
+    const { productId } = req.params;
+
+    // validate product id
+    if (!isValidObjectId(productId)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid product ID',
+      });
+    }
+
+    const updates = req.body
+
+    const parsedPriceAndQuantity = await BicycleValidationSchema
+      .partial()
+      .parse(updates);
+
+    const result = await productServices.updateProductFromDB(
+      productId,
+      parsedPriceAndQuantity,
+    );
+
+    if (!result) {
+      return res.status(404).json({
+        success: false,
+        message: 'Bicycle not found',
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: 'Bicycle updated successfully',
+      data: result,
+    });
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    res.status(500).json({
+      success: false,
+      message: error.message || 'Failed to updated Bicycle',
+      error: error,
+    });
+  }
+};
+
 export const ProductController = {
   createProduct,
   getAllProducts,
   getSingleProduct,
+  updateAProduct,
 };

@@ -22,8 +22,26 @@ const getSingleProductFromDB = async (productId: string) => {
   return res;
 };
 
+// update a product in db
+
+const updateProductFromDB = async (
+  productId: string,
+  updates: Partial<TBicycle>,
+) => {
+  const result = await Product.findByIdAndUpdate(
+    productId,
+    {
+      $set: updates,
+    },
+    { new: true },
+  );
+
+  return result;
+};
+
 export const productServices = {
   createProductIntoDB,
   getProductFromDB,
   getSingleProductFromDB,
+  updateProductFromDB,
 };
