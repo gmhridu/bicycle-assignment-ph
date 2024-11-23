@@ -77,7 +77,7 @@ const getAllProducts = async (req: Request, res: Response): Promise<any> => {
 
 const getSingleProduct = async (req: Request, res: Response): Promise<any> => {
   try {
-    const productId = req.params.productId;
+    const { productId } = req.params;
 
     if (!isValidObjectId(productId)) {
       return res.status(400).json({
@@ -125,11 +125,10 @@ const updateAProduct = async (req: Request, res: Response): Promise<any> => {
       });
     }
 
-    const updates = req.body
+    const updates = req.body;
 
-    const parsedPriceAndQuantity = await BicycleValidationSchema
-      .partial()
-      .parse(updates);
+    const parsedPriceAndQuantity =
+      await BicycleValidationSchema.partial().parse(updates);
 
     const result = await productServices.updateProductFromDB(
       productId,
@@ -148,8 +147,44 @@ const updateAProduct = async (req: Request, res: Response): Promise<any> => {
       message: 'Bicycle updated successfully',
       data: result,
     });
+  } catch (error: any) {
+    res.status(500).json({
+      success: false,
+      message: error.message || 'Failed to updated Bicycle',
+      error: error,
+    });
+  }
+};
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+// DELETE /api/products/:productId
+// delete a product
+
+const deleteAProduct = async (req: Request, res: Response): Promise<any> => {
+  try {
+    const { productId } = req.params;
+
+    // validate product id
+    if (!isValidObjectId(productId)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid product ID',
+      });
+    }
+
+    const result = await productServices.deleteProductFromDB(productId);
+
+    if (!result) {
+      return res.status(404).json({
+        success: false,
+        message: 'Bicycle not found',
+      });
+    }
+
+    res.status(201).json({
+      status: true,
+      message: 'Bicycle deleted successfully',
+      data: {},
+    });
   } catch (error: any) {
     res.status(500).json({
       success: false,
@@ -164,4 +199,5 @@ export const ProductController = {
   getAllProducts,
   getSingleProduct,
   updateAProduct,
+  deleteAProduct,
 };
