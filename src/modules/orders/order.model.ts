@@ -1,5 +1,6 @@
 import { model, Schema } from 'mongoose';
-import { TOrder } from './order.interface';
+import { IOrderModel, TOrder } from './order.interface';
+import Product from '../products/product.model';
 
 const orderSchema = new Schema<TOrder>(
   {
@@ -34,4 +35,44 @@ const orderSchema = new Schema<TOrder>(
   { timestamps: true },
 );
 
-export const Order = model<TOrder>('Order', orderSchema);
+/* 
+Static Method to create Order with total price calculation
+*/
+
+orderSchema.statics.createOrderWithCalculation = async function(orderData: Omit<TOrder, 'totalPrice'>):Promise<TOrder>{
+    const {email, products} = orderData;
+
+    let totalPrice = 0;
+
+    for(const item of products){
+        const product = await Product.findById(item.product);
+
+        if(!product){
+            throw new Error(`Product with ID: ${item.product} not found`);
+        }
+
+        if(product.quantity < item.quantity){
+            throw new Error(`Insufficient stock for product: ${product.name} (Stock: ${product.quantity})`);
+        }
+
+        // calculate total price 
+        totalPrice += product.price * item.quantity;
+
+        // update stock after order
+        product.quantity -= item.quantity;
+        await product.save();
+    }
+
+    const totalQuantity = products.reduce((sum, item)=> sum + item.quantity, 0);
+
+    const order = new this({
+        email,
+        products,
+        totalQuantity,
+        totalPrice,
+    })
+
+    return await order.save();
+}
+
+export const Order = model<TOrder, IOrderModel>('Order', orderSchema);
