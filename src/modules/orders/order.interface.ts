@@ -16,5 +16,7 @@ export interface IOrderModel extends Model<TOrder>{
     createOrderWithCalculation(
         orderData: Omit<TOrder, "totalPrice">
       ): Promise<TOrder>;
+
+      getTotalRevenue() :Promise<number>
     
 }

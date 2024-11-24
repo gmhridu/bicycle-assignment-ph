@@ -41,6 +41,28 @@ const createOrder = async (req: Request, res: Response): Promise<any> => {
   }
 };
 
+// get totalRevenue
+const getTotalRevenue = async (req: Request, res: Response): Promise<any> => {
+  try {
+    const getTotal = await orderServices.getTotalRevenue();
+
+    res.status(200).json({
+      success: true,
+      message: 'Total revenue retrieved successfully',
+      data: {
+        totalRevenue: getTotal,
+      },
+    });
+  } catch (error: any) {
+    res.status(500).json({
+      success: false,
+      message: error.message || 'Failed to retrieve total revenue',
+      error: error,
+    });
+  }
+};
+
 export const orderController = {
   createOrder,
+  getTotalRevenue,
 };

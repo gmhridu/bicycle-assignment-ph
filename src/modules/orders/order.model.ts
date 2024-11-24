@@ -75,4 +75,19 @@ orderSchema.statics.createOrderWithCalculation = async function(orderData: Omit<
     return await order.save();
 }
 
+// for total revenue
+
+orderSchema.statics.getTotalRevenue = async function():Promise<number>{
+  const result = await this.aggregate([
+    {
+      $group: {
+        _id: null,
+        totalRevenue: {$sum: '$totalPrice'},
+      }
+    }
+  ])
+
+  return result.length > 0 ? result[0].totalRevenue : 0;
+}
+
 export const Order = model<TOrder, IOrderModel>('Order', orderSchema);
