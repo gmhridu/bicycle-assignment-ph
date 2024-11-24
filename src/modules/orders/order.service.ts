@@ -7,6 +7,12 @@ const createOrder = async (orderData: Omit<TOrder, 'totalPrice'>) => {
   return res;
 };
 
+const getOrderFromDB = async()=> {
+  const res = await Order.find();
+
+  return res;
+}
+
 const getTotalRevenue = async (): Promise<number> => {
   const revenue = await Order.getTotalRevenue();
 
@@ -16,4 +22,5 @@ const getTotalRevenue = async (): Promise<number> => {
 export const orderServices = {
   createOrder,
   getTotalRevenue,
+  getOrderFromDB,
 };

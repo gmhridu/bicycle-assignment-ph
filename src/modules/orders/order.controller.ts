@@ -41,6 +41,25 @@ const createOrder = async (req: Request, res: Response): Promise<any> => {
   }
 };
 
+// get all orders
+const getOrders = async (req: Request, res: Response): Promise<any> => {
+  try {
+    const orders = await orderServices.getOrderFromDB();
+
+    res.status(200).json({
+      success: true,
+      message: 'Orders retrieved successfully',
+      data: orders,
+    });
+  } catch (error: any) {
+    res.status(500).json({
+      success: false,
+      message: error.message || 'Failed to retrieve orders',
+      error: error,
+    });
+  }
+};
+
 // get totalRevenue
 const getTotalRevenue = async (req: Request, res: Response): Promise<any> => {
   try {
@@ -64,5 +83,6 @@ const getTotalRevenue = async (req: Request, res: Response): Promise<any> => {
 
 export const orderController = {
   createOrder,
+  getOrders,
   getTotalRevenue,
 };
