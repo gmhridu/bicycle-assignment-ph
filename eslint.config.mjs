@@ -12,7 +12,7 @@ export default [
     ignores: ['node_modules', 'dist'],
     rules: {
       'no-unused-vars': 'error',
-      '@typescript-eslint/no-explicit-any': false
+      '@typescript-eslint/no-explicit-any': ["off"]
     },
   },
 ];
