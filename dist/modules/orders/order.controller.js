@@ -42,6 +42,24 @@ const createOrder = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         });
     }
 });
+// get all orders
+const getOrders = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const orders = yield order_service_1.orderServices.getOrderFromDB();
+        res.status(200).json({
+            success: true,
+            message: 'Orders retrieved successfully',
+            data: orders,
+        });
+    }
+    catch (error) {
+        res.status(500).json({
+            success: false,
+            message: error.message || 'Failed to retrieve orders',
+            error: error,
+        });
+    }
+});
 // get totalRevenue
 const getTotalRevenue = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -64,5 +82,6 @@ const getTotalRevenue = (req, res) => __awaiter(void 0, void 0, void 0, function
 });
 exports.orderController = {
     createOrder,
+    getOrders,
     getTotalRevenue,
 };

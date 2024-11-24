@@ -15,6 +15,10 @@ const createOrder = (orderData) => __awaiter(void 0, void 0, void 0, function* (
     const res = yield order_model_1.Order.createOrderWithCalculation(orderData);
     return res;
 });
+const getOrderFromDB = () => __awaiter(void 0, void 0, void 0, function* () {
+    const res = yield order_model_1.Order.find();
+    return res;
+});
 const getTotalRevenue = () => __awaiter(void 0, void 0, void 0, function* () {
     const revenue = yield order_model_1.Order.getTotalRevenue();
     return revenue;
@@ -22,4 +26,5 @@ const getTotalRevenue = () => __awaiter(void 0, void 0, void 0, function* () {
 exports.orderServices = {
     createOrder,
     getTotalRevenue,
+    getOrderFromDB,
 };
