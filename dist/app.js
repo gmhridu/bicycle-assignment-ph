@@ -4,8 +4,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
-const product_route_1 = require("./modules/products/product.route");
 const order_route_1 = require("./modules/orders/order.route");
+const product_route_1 = require("./products/product.route");
 const app = (0, express_1.default)();
 // middleware
 app.use(express_1.default.json());

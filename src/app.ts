@@ -1,6 +1,6 @@
 import express, { Request, Response } from 'express';
-import { ProductRouter } from './modules/products/product.route';
 import { orderRouter } from './modules/orders/order.route';
+import { ProductRouter } from './products/product.route';
 
 const app = express();
 
